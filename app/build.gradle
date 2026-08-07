@@ -1,10 +1,9 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace 'com.example.simple_app'   // <-- добавь эту строку
+    namespace 'com.example.simple_app'
     compileSdk 33
-    // ... остальное без изменений
-}
+
     defaultConfig {
         applicationId "com.example.simple_app"
         minSdk 21
