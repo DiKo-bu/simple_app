@@ -28,7 +28,7 @@ public class MenuManager {
             TextView tv = new TextView(context);
             tv.setText(item);
             tv.setTextSize(20);
-            tv.setPadding(10, 20, 10, 20);
+            tv.setPadding(10, 30, 10, 30);
             tv.setOnClickListener(v -> {
                 switch (item) {
                     case "Главная":
