@@ -1,32 +1,37 @@
 package com.example.simple_app;
 
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 public class MainActivity extends AppCompatActivity {
 
+    private DrawerLayout drawer;
+    private ActionBarDrawerToggle toggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Получаем тип пользователя из Intent (если нет – по умолчанию "admin")
+        // Получаем тип пользователя
         String userType = getIntent().getStringExtra("user_type");
         if (userType == null) {
-            // Если не передан (например, при автозаходе через SharedPreferences),
-            // можно считать, что это admin (или взять из сохранённых настроек)
             userType = "admin";
         }
 
-        DrawerLayout drawer = new DrawerLayout(this);
+        drawer = new DrawerLayout(this);
         drawer.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
+        // Основной контент
         LinearLayout content = new LinearLayout(this);
         content.setOrientation(LinearLayout.VERTICAL);
         content.setLayoutParams(new DrawerLayout.LayoutParams(
@@ -38,26 +43,45 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         content.addView(toolbar);
 
-        // WebView (без загрузки)
+        // WebView
         WebView webView = WebViewManager.create(this);
         content.addView(webView);
 
-        drawer.addView(content);
+        drawer.addView(content); // обязательно первым
 
-        // Меню (передаём WebView для возможных действий)
+        // Меню
         drawer.addView(MenuManager.create(this, drawer, webView));
+
+        // Настройка гамбургера
+        toggle = new ActionBarDrawerToggle(
+                this,
+                drawer,
+                toolbar,
+                R.string.open_drawer,   // строка для доступности
+                R.string.close_drawer   // строка для доступности
+        );
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();  // синхронизируем состояние (гамбургер ↔ стрелка)
 
         setContentView(drawer);
 
-        // Загружаем страницу в зависимости от типа пользователя
+        // Загружаем страницу по типу
         String page;
         if ("admin".equals(userType)) {
             page = "index.html";
         } else if ("engineer".equals(userType)) {
             page = "engineer.html";
         } else {
-            page = "error.html"; // fallback
+            page = "index.html";
         }
         webView.loadUrl("file:///android_asset/" + page);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (toggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

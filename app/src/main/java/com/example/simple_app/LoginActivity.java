@@ -18,19 +18,13 @@ public class LoginActivity extends Activity {
 
     private EditText etLogin, etPassword;
     private Button btnLogin;
-    private SharedPreferences prefs;
+    private Button btnExit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        prefs = getSharedPreferences("my_app_prefs", Context.MODE_PRIVATE);
-        if (prefs.getBoolean("logged_in", false)) {
-            // Если уже залогинен – сразу в MainActivity (но без типа – используем default)
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
-            return;
-        }
+        // Убрали проверку на logged_in – всегда показываем экран авторизации
 
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
@@ -52,7 +46,7 @@ public class LoginActivity extends Activity {
         etLogin.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-        etLogin.setPadding(20, 20, 20, 20);
+        etLogin.setPadding(20, 20, 20, 40);
         root.addView(etLogin);
 
         etPassword = new EditText(this);
@@ -62,15 +56,31 @@ public class LoginActivity extends Activity {
         etPassword.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-        etPassword.setPadding(20, 20, 20, 20);
+        etPassword.setPadding(20, 20, 20, 40);
         root.addView(etPassword);
 
+        // Кнопка "Выход"
+        btnExit = new Button(this);
+        btnExit.setText("Выход");
+        btnExit.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+        btnExit.setPadding(20, 20, 20, 40);
+        btnExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish(); // закрывает приложение
+            }
+        });
+        root.addView(btnExit);
+
+        // Кнопка "Войти"
         btnLogin = new Button(this);
         btnLogin.setText("Войти");
         btnLogin.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-        btnLogin.setPadding(20, 20, 20, 20);
+        btnLogin.setPadding(20, 20, 20, 40);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,7 +89,6 @@ public class LoginActivity extends Activity {
 
                 String userType = null;
 
-                // Проверка пар (логин -> пароль -> тип)
                 if (login.equals("admin") && pass.equals("admin")) {
                     userType = "admin";
                 } else if (login.equals("engineer") && pass.equals("engineer")) {
@@ -87,13 +96,12 @@ public class LoginActivity extends Activity {
                 }
 
                 if (userType != null) {
-                    // Сохраняем флаг
-                    prefs.edit().putBoolean("logged_in", true).apply();
-                    // Переход на главный экран с типом
+                    // (опционально) можно сохранять флаг, но он не влияет на пропуск экрана
+                    // prefs.edit().putBoolean("logged_in", true).apply();
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putExtra("user_type", userType);
                     startActivity(intent);
-                    finish();
+                    finish(); // закрываем LoginActivity, чтобы не копилась
                 } else {
                     Toast.makeText(LoginActivity.this, "Неверный логин или пароль", Toast.LENGTH_SHORT).show();
                 }
