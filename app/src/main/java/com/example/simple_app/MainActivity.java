@@ -22,7 +22,7 @@ public class MainActivity extends Activity {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
-        // Основной контент (вертикальный LinearLayout: тулбар + WebView)
+        // Основной контент
         LinearLayout content = new LinearLayout(this);
         content.setOrientation(LinearLayout.VERTICAL);
         content.setLayoutParams(new DrawerLayout.LayoutParams(
@@ -37,12 +37,12 @@ public class MainActivity extends Activity {
         WebView webView = WebViewManager.create(this);
         content.addView(webView);
 
-        drawer.addView(content); // основной контент должен быть первым
+        drawer.addView(content); // обязательно первым
 
-        // Меню (слева)
-        drawer.addView(MenuManager.create(this, drawer));
+        // Меню с передачей WebView
+        drawer.addView(MenuManager.create(this, drawer, webView));
 
-        // Настраиваем ActionBar (тулбар)
+        // Настройка тулбара как ActionBar
         setActionBar(toolbar);
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);

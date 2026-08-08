@@ -4,13 +4,14 @@ import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 public class MenuManager {
 
-    public static LinearLayout create(Context context, DrawerLayout drawer) {
+    public static LinearLayout create(Context context, DrawerLayout drawer, WebView webView) {
         LinearLayout menu = new LinearLayout(context);
         menu.setOrientation(LinearLayout.VERTICAL);
         menu.setBackgroundColor(0xFFF0F0F0);
@@ -22,14 +23,25 @@ public class MenuManager {
         params.gravity = Gravity.START;
         menu.setLayoutParams(params);
 
-        String[] items = {"Главная", "Настройки", "О нас"};
+        String[] items = {"Главная", "О нас", "Выход"};
         for (String item : items) {
             TextView tv = new TextView(context);
             tv.setText(item);
             tv.setTextSize(20);
             tv.setPadding(10, 20, 10, 20);
             tv.setOnClickListener(v -> {
-                // Здесь можно добавить логику, например, сменить URL WebView
+                switch (item) {
+                    case "Главная":
+                        webView.loadUrl("file:///android_asset/index.html");
+                        break;
+                    case "О нас":
+                        webView.loadUrl("file:///android_asset/about.html");
+                        break;
+                    case "Выход":
+                        // Закрываем приложение
+                        ((Activity) context).finish();
+                        break;
+                }
                 drawer.closeDrawers();
             });
             menu.addView(tv);
