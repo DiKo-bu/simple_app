@@ -23,7 +23,7 @@ public class MenuManager {
         menu.setBackgroundColor(Color.WHITE);
         menu.setPadding(0, 0, 0, 20);
         menu.setLayoutParams(new DrawerLayout.LayoutParams(
-                350,
+                550,
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 Gravity.START));
 
@@ -78,19 +78,19 @@ public class MenuManager {
         // ----------------------
         // Массив пунктов: {заголовок, иконка-символ, действие}
         MenuItem[] items = {
-                new MenuItem("Главная", "🏠", new Runnable() {
+                new MenuItem("", "🏠", new Runnable() {
                     @Override
                     public void run() {
                         webView.loadUrl("file:///android_asset/index.html");
                     }
                 }),
-                new MenuItem("О нас", "ℹ️", new Runnable() {
+                new MenuItem("", "❓", new Runnable() {
                     @Override
                     public void run() {
                         webView.loadUrl("file:///android_asset/about.html");
                     }
                 }),
-                new MenuItem("Сменить аккаунт", "🔄", new Runnable() {
+                new MenuItem("", "🔁", new Runnable() {
                     @Override
                     public void run() {
                         // Очищаем данные (если нужно)
@@ -102,7 +102,7 @@ public class MenuManager {
                         ((Activity) context).finish();
                     }
                 }),
-                new MenuItem("Выход", "🚪", new Runnable() {
+                new MenuItem("", "❌", new Runnable() {
                     @Override
                     public void run() {
                         ((Activity) context).finishAffinity();

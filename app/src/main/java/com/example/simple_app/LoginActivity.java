@@ -59,11 +59,11 @@ public class LoginActivity extends Activity {
         etLogin.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-        etLogin.setPadding(30, 30, 30, 30);
+        etLogin.setPadding(30, 0, 30, 30);
         // фон
         GradientDrawable editBg = new GradientDrawable();
         editBg.setColor(0xFFFFFFFF);
-        editBg.setCornerRadius(40);
+        editBg.setCornerRadius(10);
         editBg.setStroke(2, 0xFF42A5F5);
         etLogin.setBackground(editBg);
         // тень для полей (только API 21+)
@@ -82,10 +82,10 @@ public class LoginActivity extends Activity {
         etPassword.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-        etPassword.setPadding(30, 30, 30, 30);
+        etPassword.setPadding(30, 0, 30, 30);
         GradientDrawable editBg2 = new GradientDrawable();
         editBg2.setColor(0xFFFFFFFF);
-        editBg2.setCornerRadius(40);
+        editBg2.setCornerRadius(10);
         editBg2.setStroke(2, 0xFF42A5F5);
         etPassword.setBackground(editBg2);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -101,7 +101,7 @@ public class LoginActivity extends Activity {
         btnLogin.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-        btnLogin.setPadding(30, 50, 30, 50);
+        btnLogin.setPadding(30, 0, 30, 50);
         GradientDrawable btnBg = new GradientDrawable();
         btnBg.setColor(0xFF1976D2); // синий
         btnBg.setCornerRadius(10);
@@ -142,7 +142,7 @@ public class LoginActivity extends Activity {
         btnExit.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-        btnExit.setPadding(30, 30, 30, 30);
+        btnExit.setPadding(30, 0, 30, 50);
         GradientDrawable btnExitBg = new GradientDrawable();
         btnExitBg.setColor(0x00000000); // прозрачный
         btnExitBg.setCornerRadius(10);
