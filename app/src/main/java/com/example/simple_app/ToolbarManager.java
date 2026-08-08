@@ -9,7 +9,7 @@ public class ToolbarManager {
 
     public static Toolbar create(Context context) {
         Toolbar toolbar = new Toolbar(context);
-        toolbar.setTitle("Моё приложение");
+        toolbar.setTitle("Лесовод");
         toolbar.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
