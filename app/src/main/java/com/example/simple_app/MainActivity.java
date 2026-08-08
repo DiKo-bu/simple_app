@@ -5,7 +5,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;      // ← этот импорт, а не android.widget.Toolbar
 import androidx.drawerlayout.widget.DrawerLayout;
 
 public class MainActivity extends AppCompatActivity {
@@ -19,14 +19,13 @@ public class MainActivity extends AppCompatActivity {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
-        // Основной контент (тулбар + WebView)
         LinearLayout content = new LinearLayout(this);
         content.setOrientation(LinearLayout.VERTICAL);
         content.setLayoutParams(new DrawerLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
-        // Тулбар (androidx)
+        // Тулбар (androidx-версия)
         Toolbar toolbar = ToolbarManager.create(this);
         setSupportActionBar(toolbar);
         content.addView(toolbar);
@@ -35,14 +34,8 @@ public class MainActivity extends AppCompatActivity {
         WebView webView = WebViewManager.create(this);
         content.addView(webView);
 
-        drawer.addView(content); // обязательно первым
-
-        // Меню
+        drawer.addView(content);
         drawer.addView(MenuManager.create(this, drawer, webView));
-
-        // Настройка гамбургера (без ActionBarDrawerToggle – оставим как было)
-        // Мы не используем ActionBarDrawerToggle, значит гамбургер не появится.
-        // Если нужно – добавим позже.
 
         setContentView(drawer);
     }

@@ -1,9 +1,9 @@
 package com.example.simple_app;
 
 import android.content.Context;
-import android.widget.Toolbar;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import androidx.appcompat.widget.Toolbar;   // ← правильный импорт
 
 public class ToolbarManager {
 
