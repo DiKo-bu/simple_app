@@ -3,6 +3,8 @@
     <application
         android:allowBackup="true"
         android:label="MyApp"
+        android:icon="@mipmap/ic_launcher"          <!-- добавь -->
+        android:roundIcon="@mipmap/ic_launcher"     <!-- можно то же самое -->
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".MainActivity"
             android:exported="true">
