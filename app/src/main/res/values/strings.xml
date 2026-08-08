@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyApp</string>
+    <string name="app_name">Лесовод v.1.0</string>
     <string name="open_drawer">Открыть меню</string>
     <string name="close_drawer">Закрыть меню</string>
 </resources>

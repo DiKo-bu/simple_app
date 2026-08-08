@@ -63,7 +63,7 @@ public class LoginActivity extends Activity {
 
         GradientDrawable editBg = new GradientDrawable();
         editBg.setColor(0xFFFFFFFF);
-        editBg.setCornerRadius(40);
+        editBg.setCornerRadius(15);
         editBg.setStroke(2, 0xFF42A5F5);
         etLogin.setBackground(editBg);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
