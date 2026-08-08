@@ -2,41 +2,60 @@ package com.example.simple_app;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.view.ViewGroup;
 import android.view.Gravity;
-import android.text.Html;   // ← добавил для HTML
+import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.webkit.WebView;
+import android.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 public class MainActivity extends Activity {
+    private DrawerLayout drawer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        LinearLayout layout = new LinearLayout(this);
-        layout.setOrientation(LinearLayout.HORIZONTAL);
-        layout.setLayoutParams(new ViewGroup.LayoutParams(
+        drawer = new DrawerLayout(this);
+        drawer.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
+                ViewGroup.LayoutParams.MATCH_PARENT));
 
-        TextView left = new TextView(this);
-        left.setText("Слева");
-        left.setGravity(Gravity.START);
-        left.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        // Основной контент (вертикальный LinearLayout: тулбар + WebView)
+        LinearLayout content = new LinearLayout(this);
+        content.setOrientation(LinearLayout.VERTICAL);
+        content.setLayoutParams(new DrawerLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
 
-        TextView center = new TextView(this);
-        center.setText(Html.fromHtml("<h1>Центр</h1>", Html.FROM_HTML_MODE_LEGACY));
-        center.setGravity(Gravity.CENTER);
-        center.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        // Тулбар
+        Toolbar toolbar = ToolbarManager.create(this);
+        content.addView(toolbar);
 
-        TextView right = new TextView(this);
-        right.setText("Справа");
-        right.setGravity(Gravity.END);
-        right.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1));
+        // WebView
+        WebView webView = WebViewManager.create(this);
+        content.addView(webView);
 
-        layout.addView(left);
-        layout.addView(center);
-        layout.addView(right);
-        setContentView(layout);
+        drawer.addView(content); // основной контент должен быть первым
+
+        // Меню (слева)
+        drawer.addView(MenuManager.create(this, drawer));
+
+        // Настраиваем ActionBar (тулбар)
+        setActionBar(toolbar);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+
+        setContentView(drawer);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            drawer.openDrawer(Gravity.START);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
