@@ -101,10 +101,10 @@ public class LoginActivity extends Activity {
         btnLogin.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
-        btnLogin.setPadding(30, 30, 30, 30);
+        btnLogin.setPadding(30, 50, 30, 50);
         GradientDrawable btnBg = new GradientDrawable();
         btnBg.setColor(0xFF1976D2); // синий
-        btnBg.setCornerRadius(40);
+        btnBg.setCornerRadius(10);
         btnLogin.setBackground(btnBg);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             btnLogin.setElevation(8);
@@ -145,7 +145,7 @@ public class LoginActivity extends Activity {
         btnExit.setPadding(30, 30, 30, 30);
         GradientDrawable btnExitBg = new GradientDrawable();
         btnExitBg.setColor(0x00000000); // прозрачный
-        btnExitBg.setCornerRadius(40);
+        btnExitBg.setCornerRadius(10);
         btnExitBg.setStroke(2, 0xFF1976D2);
         btnExit.setBackground(btnExitBg);
         btnExit.setOnClickListener(new View.OnClickListener() {
