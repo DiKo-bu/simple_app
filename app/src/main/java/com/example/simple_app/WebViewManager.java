@@ -13,10 +13,13 @@ public class WebViewManager {
         webView.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
+
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setAllowUniversalAccessFromFileURLs(true);
+        webView.getSettings().setDomStorageEnabled(true);   // <-- ЭТО СТРОКА
+
         webView.setWebViewClient(new WebViewClient());
-        // НЕ загружаем страницу здесь – оставляем для внешнего управления
+        // Загрузка страницы происходит в MainActivity, не здесь
         return webView;
     }
 }
