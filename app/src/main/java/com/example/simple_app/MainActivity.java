@@ -23,12 +23,19 @@ public class MainActivity extends Activity {
         left.setGravity(Gravity.START);
         left.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1)); // вес 1
 
+        TextView center = new TextView(this);
+        right.setText("<h1>Центр</h1>");
+        right.setGravity(Gravity.CENTER);
+        right.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1)); // вес 1
+        
         TextView right = new TextView(this);
         right.setText("Справа");
         right.setGravity(Gravity.END);
         right.setLayoutParams(new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1)); // вес 1
+        
 
         layout.addView(left);
+        layout.addView(center);
         layout.addView(right);
         setContentView(layout);
     }
