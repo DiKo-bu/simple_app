@@ -24,15 +24,14 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Проверяем, авторизован ли пользователь (если да – сразу в Main)
         prefs = getSharedPreferences("my_app_prefs", Context.MODE_PRIVATE);
         if (prefs.getBoolean("logged_in", false)) {
+            // Если уже залогинен – сразу в MainActivity (но без типа – используем default)
             startActivity(new Intent(this, MainActivity.class));
             finish();
             return;
         }
 
-        // Создаём UI
         LinearLayout root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setGravity(Gravity.CENTER);
@@ -41,7 +40,6 @@ public class LoginActivity extends Activity {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
-        // Заголовок
         TextView title = new TextView(this);
         title.setText("Авторизация");
         title.setTextSize(28);
@@ -49,7 +47,6 @@ public class LoginActivity extends Activity {
         title.setPadding(0, 0, 0, 50);
         root.addView(title);
 
-        // Поле логина
         etLogin = new EditText(this);
         etLogin.setHint("Логин");
         etLogin.setLayoutParams(new LinearLayout.LayoutParams(
@@ -58,7 +55,6 @@ public class LoginActivity extends Activity {
         etLogin.setPadding(20, 20, 20, 20);
         root.addView(etLogin);
 
-        // Поле пароля
         etPassword = new EditText(this);
         etPassword.setHint("Пароль");
         etPassword.setInputType(android.text.InputType.TYPE_CLASS_TEXT |
@@ -69,7 +65,6 @@ public class LoginActivity extends Activity {
         etPassword.setPadding(20, 20, 20, 20);
         root.addView(etPassword);
 
-        // Кнопка входа
         btnLogin = new Button(this);
         btnLogin.setText("Войти");
         btnLogin.setLayoutParams(new LinearLayout.LayoutParams(
@@ -82,12 +77,22 @@ public class LoginActivity extends Activity {
                 String login = etLogin.getText().toString().trim();
                 String pass = etPassword.getText().toString().trim();
 
-                // Простая проверка (замени на свою логику)
+                String userType = null;
+
+                // Проверка пар (логин -> пароль -> тип)
                 if (login.equals("admin") && pass.equals("admin")) {
+                    userType = "admin";
+                } else if (login.equals("engineer") && pass.equals("engineer")) {
+                    userType = "engineer";
+                }
+
+                if (userType != null) {
                     // Сохраняем флаг
                     prefs.edit().putBoolean("logged_in", true).apply();
-                    // Переход на главный экран
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    // Переход на главный экран с типом
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent.putExtra("user_type", userType);
+                    startActivity(intent);
                     finish();
                 } else {
                     Toast.makeText(LoginActivity.this, "Неверный логин или пароль", Toast.LENGTH_SHORT).show();

@@ -13,13 +13,10 @@ public class WebViewManager {
         webView.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
-
-        // === НОВЫЕ НАСТРОЙКИ ===
-        webView.getSettings().setJavaScriptEnabled(true);          // включаем JS
-        webView.getSettings().setAllowUniversalAccessFromFileURLs(true); // разрешаем fetch из file://
-
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setAllowUniversalAccessFromFileURLs(true);
         webView.setWebViewClient(new WebViewClient());
-        webView.loadUrl("file:///android_asset/index.html");
+        // НЕ загружаем страницу здесь – оставляем для внешнего управления
         return webView;
     }
 }

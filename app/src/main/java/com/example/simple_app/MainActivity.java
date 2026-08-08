@@ -5,7 +5,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;      // ← этот импорт, а не android.widget.Toolbar
+import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 public class MainActivity extends AppCompatActivity {
@@ -13,6 +13,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Получаем тип пользователя из Intent (если нет – по умолчанию "admin")
+        String userType = getIntent().getStringExtra("user_type");
+        if (userType == null) {
+            // Если не передан (например, при автозаходе через SharedPreferences),
+            // можно считать, что это admin (или взять из сохранённых настроек)
+            userType = "admin";
+        }
 
         DrawerLayout drawer = new DrawerLayout(this);
         drawer.setLayoutParams(new ViewGroup.LayoutParams(
@@ -25,18 +33,31 @@ public class MainActivity extends AppCompatActivity {
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
-        // Тулбар (androidx-версия)
+        // Тулбар
         Toolbar toolbar = ToolbarManager.create(this);
         setSupportActionBar(toolbar);
         content.addView(toolbar);
 
-        // WebView
+        // WebView (без загрузки)
         WebView webView = WebViewManager.create(this);
         content.addView(webView);
 
         drawer.addView(content);
+
+        // Меню (передаём WebView для возможных действий)
         drawer.addView(MenuManager.create(this, drawer, webView));
 
         setContentView(drawer);
+
+        // Загружаем страницу в зависимости от типа пользователя
+        String page;
+        if ("admin".equals(userType)) {
+            page = "index.html";
+        } else if ("engineer".equals(userType)) {
+            page = "engineer.html";
+        } else {
+            page = "error.html"; // fallback
+        }
+        webView.loadUrl("file:///android_asset/" + page);
     }
 }
