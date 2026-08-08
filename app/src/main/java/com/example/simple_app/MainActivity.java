@@ -20,25 +20,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Получаем тип пользователя
+        // Получаем тип пользователя (передан из LoginActivity)
         String userType = getIntent().getStringExtra("user_type");
         if (userType == null) {
-            userType = "admin";
+            userType = "admin"; // fallback
         }
 
+        // Создаём DrawerLayout
         drawer = new DrawerLayout(this);
         drawer.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
-        // Основной контент
+        // Основной контент (LinearLayout с тулбаром и WebView)
         LinearLayout content = new LinearLayout(this);
         content.setOrientation(LinearLayout.VERTICAL);
         content.setLayoutParams(new DrawerLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
 
-        // Тулбар
+        // Тулбар (androidx)
         Toolbar toolbar = ToolbarManager.create(this);
         setSupportActionBar(toolbar);
         content.addView(toolbar);
@@ -47,25 +48,26 @@ public class MainActivity extends AppCompatActivity {
         WebView webView = WebViewManager.create(this);
         content.addView(webView);
 
-        drawer.addView(content); // обязательно первым
+        // Добавляем контент в DrawerLayout (обязательно первым)
+        drawer.addView(content);
 
-        // Меню
-        drawer.addView(MenuManager.create(this, drawer, webView));
+        // Добавляем меню (с передачей userType)
+        drawer.addView(MenuManager.create(this, drawer, webView, userType));
 
-        // Настройка гамбургера
+        // Настраиваем гамбургер (ActionBarDrawerToggle)
         toggle = new ActionBarDrawerToggle(
                 this,
                 drawer,
                 toolbar,
-                R.string.open_drawer,   // строка для доступности
-                R.string.close_drawer   // строка для доступности
+                R.string.open_drawer,   // строка из strings.xml
+                R.string.close_drawer   // строка из strings.xml
         );
         drawer.addDrawerListener(toggle);
-        toggle.syncState();  // синхронизируем состояние (гамбургер ↔ стрелка)
+        toggle.syncState(); // синхронизируем состояние иконки
 
         setContentView(drawer);
 
-        // Загружаем страницу по типу
+        // Загружаем страницу в зависимости от роли
         String page;
         if ("admin".equals(userType)) {
             page = "index.html";
@@ -79,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Обработка нажатия гамбургера (передаём событие в toggle)
         if (toggle.onOptionsItemSelected(item)) {
             return true;
         }
