@@ -40,12 +40,12 @@ public class LoginActivity extends Activity {
 
         // ---- Заголовок ----
         TextView title = new TextView(this);
-        title.setText("Авторизация");
-        title.setTextSize(32);
+        title.setText("Введите данные");
+        title.setTextSize(22);
         title.setTextColor(0xFF1A237E);
         title.setGravity(Gravity.CENTER);
         // Внутренний отступ снизу
-        title.setPadding(0, 0, 0, 40);
+        title.setPadding(0, 0, 0, 15);
         root.addView(title);
 
         // ---- Поле "Логин" ----
@@ -87,7 +87,7 @@ public class LoginActivity extends Activity {
 
         GradientDrawable editBg2 = new GradientDrawable();
         editBg2.setColor(0xFFFFFFFF);
-        editBg2.setCornerRadius(40);
+        editBg2.setCornerRadius(15);
         editBg2.setStroke(2, 0xFF42A5F5);
         etPassword.setBackground(editBg2);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -109,7 +109,7 @@ public class LoginActivity extends Activity {
 
         GradientDrawable btnBg = new GradientDrawable();
         btnBg.setColor(0xFF1976D2);
-        btnBg.setCornerRadius(40);
+        btnBg.setCornerRadius(15);
         btnLogin.setBackground(btnBg);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             btnLogin.setElevation(8);
@@ -154,7 +154,7 @@ public class LoginActivity extends Activity {
 
         GradientDrawable btnExitBg = new GradientDrawable();
         btnExitBg.setColor(0x00000000);
-        btnExitBg.setCornerRadius(40);
+        btnExitBg.setCornerRadius(15);
         btnExitBg.setStroke(2, 0xFF1976D2);
         btnExit.setBackground(btnExitBg);
         btnExit.setOnClickListener(new View.OnClickListener() {
