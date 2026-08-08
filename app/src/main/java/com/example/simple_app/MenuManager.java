@@ -1,8 +1,8 @@
 package com.example.simple_app;
 
+import android.app.Activity;                     // ← добавлен импорт
 import android.content.Context;
 import android.view.Gravity;
-import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
@@ -38,7 +38,6 @@ public class MenuManager {
                         webView.loadUrl("file:///android_asset/about.html");
                         break;
                     case "Выход":
-                        // Закрываем приложение
                         ((Activity) context).finish();
                         break;
                 }
