@@ -7,13 +7,18 @@
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity
-            android:name=".MainActivity"
+        
+        <!-- LoginActivity – LAUNCHER (стартовый) -->
+        <activity android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- MainActivity – без LAUNCHER -->
+        <activity android:name=".MainActivity"
+            android:exported="false" />
     </application>
 </manifest>
