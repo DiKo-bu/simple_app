@@ -78,19 +78,19 @@ public class MenuManager {
         // ----------------------
         // Массив пунктов: {заголовок, иконка-символ, действие}
         MenuItem[] items = {
-                new MenuItem("Главная", "🏠", new Runnable() {
-                    @Override
-                    public void run() {
-                        webView.loadUrl("file:///android_asset/index.html");
-                    }
-                }),
-                new MenuItem("О нас", "❓", new Runnable() {
-                    @Override
-                    public void run() {
-                        webView.loadUrl("file:///android_asset/about.html");
-                    }
-                }),
-                new MenuItem("Сменить роль", "🔁", new Runnable() {
+        //        new MenuItem("Главная", "🏠", new Runnable() {
+        //            @Override
+        //            public void run() {
+        //                webView.loadUrl("file:///android_asset/index.html");
+        //            }
+        //        }),
+        //        new MenuItem("О нас", "❓", new Runnable() {
+        //            @Override
+        //            public void run() {
+        //                webView.loadUrl("file:///android_asset/about.html");
+        //            }
+        //        }),
+                new MenuItem("Сменить логин", "🔁", new Runnable() {
                     @Override
                     public void run() {
                         // Очищаем данные (если нужно)

@@ -125,8 +125,9 @@
         .action-btn.edit:hover { background: #dbeafe; }
         .action-btn.delete { color: #dc2626; }
         .action-btn.delete:hover { background: #fee2e2; }
+        .action-btn.info { color: #6b7280; }
+        .action-btn.info:hover { background: #e5e7eb; }
 
-        /* Модальное окно для формы */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -183,7 +184,9 @@
         .form-control:focus { outline: 2px solid #2563eb; border-color: transparent; }
         textarea.form-control { resize: vertical; }
 
-        /* Стили для диалогового модального окна (оно же, но может быть отдельно) – используем общие классы */
+        .detail-item { margin-bottom: 12px; }
+        .detail-item label { font-weight: 600; display: block; font-size: 0.85rem; color: #475569; }
+        .detail-item .value { font-size: 1rem; padding: 4px 0; word-break: break-word; }
 
         @media (max-width: 768px) {
             body { padding: 6px; }
@@ -222,13 +225,7 @@
                 <i class="fas fa-download"></i> <span class="btn-text">Загрузить с сервера</span>
             </button>
             <button class="btn btn-outline-success btn-sm" id="pushServerBtn">
-                <i class="fas fa-upload"></i> <span class="btn-text">Отправить на сервер</span>
-            </button>
-            <button class="btn btn-success btn-sm" id="editSelectedBtn" disabled>
-                <i class="fas fa-pen"></i> <span class="btn-text">Изменить</span>
-            </button>
-            <button class="btn btn-danger btn-sm" id="deleteSelectedBtn" disabled>
-                <i class="fas fa-trash"></i> <span class="btn-text">Удалить</span>
+                <i class="fas fa-upload"></i> <span class="btn-text">Отправить выбранное</span>
             </button>
             <button class="btn btn-primary btn-sm" id="addBtn">
                 <i class="fas fa-plus"></i> <span class="btn-text">Добавить</span>
@@ -296,7 +293,7 @@
     </div>
 </div>
 
-<!-- Модальное окно для кастомных диалогов (подтверждения, уведомления) -->
+<!-- Модальное окно для диалогов подтверждения/уведомлений -->
 <div class="modal-overlay" id="dialogModal">
     <div class="modal-box" style="max-width:400px;">
         <div class="modal-header">
@@ -306,8 +303,28 @@
         <div class="modal-body">
             <p id="dialogMessage">Сообщение</p>
         </div>
-        <div class="modal-footer" id="dialogFooter">
-            <!-- кнопки генерируются динамически -->
+        <div class="modal-footer" id="dialogFooter"></div>
+    </div>
+</div>
+
+<!-- Модальное окно для просмотра деталей плана -->
+<div class="modal-overlay" id="detailsModal">
+    <div class="modal-box" style="max-width:500px;">
+        <div class="modal-header">
+            <h5 class="modal-title">Детали плана</h5>
+            <button class="modal-close" id="detailsCloseBtn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="detail-item"><label>ID</label><div class="value" id="detailId">-</div></div>
+            <div class="detail-item"><label>Название</label><div class="value" id="detailName">-</div></div>
+            <div class="detail-item"><label>Описание</label><div class="value" id="detailDescript">-</div></div>
+            <div class="detail-item"><label>Дата</label><div class="value" id="detailDate">-</div></div>
+            <div class="detail-item"><label>Заказчик (ID)</label><div class="value" id="detailRequester">-</div></div>
+            <div class="detail-item"><label>Исполнитель</label><div class="value" id="detailExecuter">-</div></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline-secondary" id="detailsCloseBtn2">Закрыть</button>
+         <!--   <button class="btn btn-primary" id="detailsEditBtn">Редактировать</button> -->
         </div>
     </div>
 </div>
@@ -345,10 +362,8 @@
             title.textContent = options.title || 'Диалог';
             message.textContent = options.message || '';
 
-            // Очищаем футер
             footer.innerHTML = '';
 
-            // Создаём кнопки
             const buttons = options.buttons || [{ text: 'ОК', class: 'btn-primary', action: () => {} }];
             buttons.forEach((btnDef) => {
                 const btn = document.createElement('button');
@@ -362,7 +377,6 @@
                 footer.appendChild(btn);
             });
 
-            // Закрытие по крестику или фону – считается отменой (resolve(false))
             const closeDialog = () => {
                 overlay.classList.remove('open');
             };
@@ -379,7 +393,6 @@
         });
     }
 
-    // Упрощённые функции
     function showConfirmDialog(title, message) {
         return showDialog({
             title: title,
@@ -408,8 +421,6 @@
     const searchInput = document.getElementById('searchInput');
     const clearSearchBtn = document.getElementById('clearSearchBtn');
     const addBtn = document.getElementById('addBtn');
-    const editSelectedBtn = document.getElementById('editSelectedBtn');
-    const deleteSelectedBtn = document.getElementById('deleteSelectedBtn');
     const selectAllChk = document.getElementById('selectAll');
     const modalTitle = document.getElementById('modalTitle');
     const planForm = document.getElementById('planForm');
@@ -426,8 +437,20 @@
     const fetchServerBtn = document.getElementById('fetchServerBtn');
     const pushServerBtn = document.getElementById('pushServerBtn');
 
+    const detailsModal = document.getElementById('detailsModal');
+    const detailsCloseBtn = document.getElementById('detailsCloseBtn');
+    const detailsCloseBtn2 = document.getElementById('detailsCloseBtn2');
+    const detailsEditBtn = document.getElementById('detailsEditBtn');
+    const detailId = document.getElementById('detailId');
+    const detailName = document.getElementById('detailName');
+    const detailDescript = document.getElementById('detailDescript');
+    const detailDate = document.getElementById('detailDate');
+    const detailRequester = document.getElementById('detailRequester');
+    const detailExecuter = document.getElementById('detailExecuter');
+
     let allPlans = [];
     let editingId = null;
+    let currentDetailsId = null;
 
     // ============================================================
     //  Управление модальным окном для формы
@@ -445,6 +468,26 @@
     });
 
     // ============================================================
+    //  Управление модальным окном деталей
+    // ============================================================
+    function openDetailsModal() { detailsModal.classList.add('open'); }
+    function closeDetailsModal() {
+        detailsModal.classList.remove('open');
+        currentDetailsId = null;
+    }
+    detailsCloseBtn.addEventListener('click', closeDetailsModal);
+    detailsCloseBtn2.addEventListener('click', closeDetailsModal);
+    detailsModal.addEventListener('click', function(e) {
+        if (e.target === this) closeDetailsModal();
+    });
+    // detailsEditBtn.addEventListener('click', function() {
+    //    if (currentDetailsId !== null) {
+    //        closeDetailsModal();
+    //        openEditModal(currentDetailsId);
+    //    }
+    //});
+
+    // ============================================================
     //  Вспомогательные
     // ============================================================
     function escapeHtml(text) { if (!text) return ''; const d = document.createElement('div'); d.textContent = text; return d.innerHTML; }
@@ -460,16 +503,31 @@
     }
 
     function updateButtons() {
-        const selected = getSelectedIds();
-        const count = selected.length;
-        editSelectedBtn.disabled = count !== 1;
-        deleteSelectedBtn.disabled = count === 0;
         const allCheckboxes = document.querySelectorAll('#plansBody .row-checkbox input[type="checkbox"]');
         const checked = document.querySelectorAll('#plansBody .row-checkbox input[type="checkbox"]:checked');
         if (allCheckboxes.length) {
             selectAllChk.checked = allCheckboxes.length === checked.length;
             selectAllChk.indeterminate = checked.length > 0 && checked.length < allCheckboxes.length;
         }
+    }
+
+    // ============================================================
+    //  Отображение деталей плана
+    // ============================================================
+    function showPlanDetails(id) {
+        const plan = allPlans.find(p => p.order_numb == id);
+        if (!plan) {
+            showAlertDialog('Ошибка', 'План не найден');
+            return;
+        }
+        currentDetailsId = id;
+        detailId.textContent = plan.order_numb;
+        detailName.textContent = plan.name || '-';
+        detailDescript.textContent = plan.descript || '-';
+        detailDate.textContent = plan.date || '-';
+        detailRequester.textContent = plan.requester_id ?? '-';
+        detailExecuter.textContent = plan.executer_name || '-';
+        openDetailsModal();
     }
 
     // ============================================================
@@ -493,6 +551,7 @@
                     <td>${p.requester_id}</td>
                     <td class="executer-col">${escapeHtml(p.executer_name || '')}</td>
                     <td>
+                        <button class="action-btn info" data-id="${p.order_numb}" title="Подробнее"><i class="fas fa-info-circle"></i></button>
                         <button class="action-btn edit" data-id="${p.order_numb}" title="Редактировать"><i class="fas fa-pen"></i></button>
                         <button class="action-btn delete" data-id="${p.order_numb}" title="Удалить"><i class="fas fa-trash"></i></button>
                     </td>
@@ -501,6 +560,12 @@
         });
         plansBody.innerHTML = html;
 
+        document.querySelectorAll('.action-btn.info').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                showPlanDetails(this.dataset.id);
+            });
+        });
         document.querySelectorAll('.action-btn.edit').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -591,23 +656,32 @@
     }
 
     // ============================================================
-    //  Кнопка "Отправить на сервер"
+    //  Кнопка "Отправить выбранное" (только выделенные строки)
     // ============================================================
     async function pushToServer() {
-        if (allPlans.length === 0) {
-            await showAlertDialog('Информация', 'Нет данных для отправки.');
+        const selectedIds = getSelectedIds();
+        if (selectedIds.length === 0) {
+            await showAlertDialog('Внимание', 'Не выбрано ни одной записи. Отметьте строки для отправки.');
             return;
         }
+
+        const selectedPlans = allPlans.filter(p => selectedIds.includes(p.order_numb));
+        if (selectedPlans.length === 0) {
+            await showAlertDialog('Внимание', 'Выбранные записи не найдены в локальных данных.');
+            return;
+        }
+
         const confirmed = await showConfirmDialog(
             'Подтверждение',
-            'Отправить все локальные планы на сервер?'
+            `Отправить на сервер выбранные планы (${selectedPlans.length} шт.)?`
         );
         if (!confirmed) return;
 
         let successCount = 0;
         let errorCount = 0;
-        const newPlans = allPlans.filter(p => p.order_numb < 0);
-        const existingPlans = allPlans.filter(p => p.order_numb > 0);
+
+        const newPlans = selectedPlans.filter(p => p.order_numb < 0);
+        const existingPlans = selectedPlans.filter(p => p.order_numb > 0);
 
         for (const plan of newPlans) {
             try {
@@ -621,7 +695,9 @@
                 const result = await resp.json();
                 if (!result.success) throw new Error(result.error || 'Ошибка создания');
                 const idx = allPlans.findIndex(p => p.order_numb === plan.order_numb);
-                if (idx !== -1) allPlans[idx].order_numb = result.insertId;
+                if (idx !== -1) {
+                    allPlans[idx].order_numb = result.insertId;
+                }
                 successCount++;
             } catch (err) {
                 errorCount++;
@@ -742,24 +818,6 @@
     // ============================================================
     addBtn.addEventListener('click', openAddModal);
     saveBtn.addEventListener('click', saveLocalPlan);
-    editSelectedBtn.addEventListener('click', function() {
-        const ids = getSelectedIds();
-        if (ids.length === 1) openEditModal(ids[0]);
-        else showAlertDialog('Внимание', 'Выберите ровно один план.');
-    });
-    deleteSelectedBtn.addEventListener('click', async function() {
-        const ids = getSelectedIds();
-        if (ids.length === 0) return;
-        const confirmed = await showConfirmDialog('Подтверждение', `Удалить выбранные планы (${ids.length} шт.) локально?`);
-        if (!confirmed) return;
-        ids.forEach(id => {
-            const index = allPlans.findIndex(p => p.order_numb == id);
-            if (index !== -1) allPlans.splice(index, 1);
-        });
-        saveToLocalStorage(allPlans);
-        renderTable(allPlans);
-    });
-
     fetchServerBtn.addEventListener('click', fetchFromServer);
     pushServerBtn.addEventListener('click', pushToServer);
 
