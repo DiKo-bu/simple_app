@@ -121,6 +121,8 @@ function changeUser() {
     console.log(
         "Смена пользователя"
     );
+    window.location.href =
+            "login.html";
 }
 
 

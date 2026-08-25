@@ -5,24 +5,24 @@
 import {
     createApplication,
     UI
-} from "./ui.js";
+} from "./engineer/ui.js";
 
 import {
     initializeToolbar,
     updateTexts
-} from "./toolbar.js";
+} from "./engineer/toolbar.js";
 
 import {
     initializeTabs
-} from "./tabs.js";
+} from "./engineer/tabs.js";
 
 import {
     initializeDrawer
-} from "./drawer.js";
+} from "./engineer/drawer.js";
 
 import {
     WorkManager
-} from "./WorkManager.js";
+} from "./engineer/WorkManager.js";
 
 
 // ============================================================

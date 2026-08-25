@@ -187,7 +187,7 @@ const Login = {
     // АВТОРИЗАЦИЯ
     // ========================================================
 
-    login() {
+    async login() {
 
         const username =
             this.username.value.trim();
@@ -221,39 +221,86 @@ const Login = {
         }
 
 
-        // ====================================================
-        // ВРЕМЕННАЯ ЗАГЛУШКА
-        // ====================================================
+        try {
 
-        console.log(
-            "Пользователь:",
-            username
-        );
+            const response =
+                await fetch(
+                    "https://app.komekcom.kz/auth/login",
+                    {
+                        method: "POST",
 
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
 
-        // ----------------------------------------------------
-        // Временно считаем авторизацию успешной
-        // ----------------------------------------------------
+                        credentials: "include",
 
-        const user = {
-
-            username: username
-
-        };
-
-
-        sessionStorage.setItem(
-            "current_user",
-            JSON.stringify(user)
-        );
+                        body: JSON.stringify({
+                            login: username,
+                            password: password
+                        })
+                    }
+                );
 
 
-        // ----------------------------------------------------
-        // Переходим на основную страницу
-        // ----------------------------------------------------
+            const result =
+                await response.json();
 
-        window.location.href =
-            "app.html";
+
+            if (!response.ok) {
+
+                this.showError(
+                    result.error ||
+                    "Ошибка авторизации"
+                );
+
+                return;
+            }
+
+
+            if (
+                result.authenticated !== true
+            ) {
+
+                this.showError(
+                    "Авторизация не выполнена"
+                );
+
+                return;
+            }
+
+
+            if (!result.redirect) {
+
+                this.showError(
+                    "Адрес перехода не получен"
+                );
+
+                return;
+            }
+
+
+            // ------------------------------------------------
+            // ЛОКАЛЬНЫЙ ПЕРЕХОД
+            // ------------------------------------------------
+
+            window.location.href =
+                result.redirect;
+
+        } catch (error) {
+
+            console.error(
+                "Auth Service error:",
+                error
+            );
+
+
+            this.showError(
+                "Ошибка: " +
+                error.message
+            );
+        }
     },
 
 
